@@ -1,0 +1,71 @@
+# HTTP Server
+[server]
+	Address     = ":8199"     #本地监听地址。默认":80"
+	ServerRoot  = "public"
+	ServerAgent = "gf-app"
+	LogPath     = "./tmp/log/gf-app/server"
+	routeOverWrite      = true              # 当遇到重复路由注册时是否强制覆盖。默认为false，重复路由存在时将会在启动时报错退出
+    nameToUriType       = 2                  # 路由注册中使用对象注册时的路由生成规则。默认为0
+    # Cookie配置
+    cookieMaxAge        = "365d"             # Cookie有效期。默认为365天
+    cookiePath          = "/"                # Cookie有效路径。默认为"/"表示全站所有路径下有效
+    cookieDomain        = ""                 # Cookie有效域名。默认为当前配置Cookie时的域名
+    # Sessions配置
+    sessionMaxAge       = "24h"              # Session有效期。默认为24小时
+    sessionIdName       = "gfsessionid"      # SessionId的键名名称。默认为gfsessionid
+    sessionCookieOutput = true               # Session特性开启时，是否将SessionId返回到Cookie中。默认true
+    sessionPath         = "./tmp/sessions"   # Session存储的文件目录路径。默认为当前系统临时目录下的sessions目录
+# Logger.
+[logger]
+	path                 = "./tmp/log/gf-app"   # 日志文件路径。默认为空，表示关闭，仅输出到终端
+	file                 = "{Y-m-d}.log" # 日志文件格式。默认为"{Y-m-d}.log"
+	prefix               = ""            # 日志内容输出前缀。默认为空
+	level                = "all"         # 日志输出级别
+	ctxKeys              = []            # Context上下文变量名称，自动打印Context的变量到日志中。默认为空
+	headerPrint          = true          # 是否打印日志的头信息。默认true
+	stdoutPrint          = true          # 日志是否同时输出到终端。默认true
+	rotateSize           = 0             # 按照日志文件大小对文件进行滚动切分。默认为0，表示关闭滚动切分特性
+	rotateExpire         = 0             # 按照日志文件时间间隔对文件滚动切分。默认为0，表示关闭滚动切分特性
+	rotateBackupLimit    = 0             # 按照切分的文件数量清理切分文件，当滚动切分特性开启时有效。默认为0，表示不备份，切分则删除
+	rotateBackupExpire   = 0             # 按照切分的文件有效期清理切分文件，当滚动切分特性开启时有效。默认为0，表示不备份，切分则删除
+	rotateBackupCompress = 0             # 滚动切分文件的压缩比（0-9）。默认为0，表示不压缩
+	rotateCheckInterval  = "1h"          # 滚动切分的时间检测间隔，一般不需要设置。默认为1小时
+	writerColorEnable    = false         # 日志文件是否带上颜色。默认false，表示不带颜色
+
+# Template.
+[viewer]
+    Path        = "template"
+    DefaultFile = "index.html"
+    Delimiters  =  ["{{", "}}"]
+
+# Database.
+[database]
+    link  = "mysql:root:123456@tcp(127.0.0.1:3306)/team"
+    debug = true
+    # Database logger.
+    [database.logger]
+        Path   = "./tmp/log/gf-app/sql"
+        Level  = "all"
+        Stdout = true
+
+# GF-CLI工具配置
+[gfcli]
+    # 自定义DAO生成配置(默认是读取database配置)
+    [[gfcli.gen.dao]]
+            link   = "mysql:root:123456@tcp(127.0.0.1:3306)/team"
+            tables = "student"
+    #打包配置
+    [gfcli.build]
+            name     = "my-application"
+            arch     = "amd64"
+            system   = "linux,windows"
+            mod      = "none"
+            cgo      = 0
+            pack     = "config,i18n,public,template"
+            version  = "v1.0.0"
+            output   = "./bin"
+            extra    = ""
+
+[app]
+    startTime= "2006-01-02" #开始时间
+    machineId= 108 #机器码
