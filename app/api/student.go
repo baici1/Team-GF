@@ -3,10 +3,12 @@ package api
 import (
 	"strconv"
 	"team-gf/app/model"
-	"team-gf/app/service/student"
+	"team-gf/app/service"
 	"team-gf/library/code"
 	"team-gf/library/response"
 	"team-gf/library/snowflake"
+
+	"github.com/gogf/gf/frame/g"
 
 	"github.com/gogf/gf/errors/gerror"
 
@@ -43,9 +45,33 @@ func (*studentApi) SignUp(r *ghttp.Request) {
 	id := snowflake.GenID()
 	serviceReq.ID = strconv.FormatInt(id, 10)
 	//业务函数
-	if err := student.User.SignUp(serviceReq); err != nil {
+	if err := service.User.SignUp(serviceReq); err != nil {
 		response.ResponseError(r, code.CodeUserExist, err.Error())
 	} else {
 		response.ResponseSuccess(r, code.CodeSuccess, nil)
 	}
+}
+
+// Login 学生用户登录功能
+func (*studentApi) SignIn(r *ghttp.Request) {
+	//创建登录请求的参数对象
+	var (
+		data *model.StuApiSignInReq
+	)
+	//获取登录请求的参数
+	if err := r.Parse(&data); err != nil {
+		response.ResponseError(r, code.CodeInvalidParam, err.Error())
+	}
+	//业务处理函数
+	token, err := service.User.SignIn(data)
+	if err != nil {
+		response.ResponseError(r, code.CodeServerBusy, err.Error())
+	}
+	response.ResponseSuccess(r, code.CodeSuccess, g.Map{
+		"token": token,
+	})
+}
+
+func (*studentApi) Ping(r *ghttp.Request) {
+	response.ResponseSuccess(r, code.CodeSuccess, r.GetParam("ID"))
 }

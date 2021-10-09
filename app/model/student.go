@@ -13,3 +13,9 @@ type StuServiceSignUpReq struct {
 	Password string
 	ID       string
 }
+
+//学生登录的请求参数
+type StuApiSignInReq struct {
+	Stuid    string `json:"stuid" v:"required#学号不能为空"`
+	Password string `json:"password" v:"required#密码不能为空"`
+}

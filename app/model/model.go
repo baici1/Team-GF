@@ -4,6 +4,13 @@
 
 package model
 
+// Game is the golang structure for table game.
+type Game struct {
+	Id        int64  `orm:"id,primary" json:"id"`        // 编号
+	Name      string `orm:"name"       json:"name"`      // 比赛名称
+	Introduce string `orm:"introduce"  json:"introduce"` // 比赛简介
+}
+
 // Student is the golang structure for table student.
 type Student struct {
 	Id        int64  `orm:"id,primary" json:"id"`        // 学生编号
@@ -13,4 +20,21 @@ type Student struct {
 	Password  string `orm:"password"   json:"password"`  // 学生密码
 	Email     string `orm:"email"      json:"email"`     // 学生邮箱
 	Introduce string `orm:"introduce"  json:"introduce"` // 学生简介
+}
+
+// Teacher is the golang structure for table teacher.
+type Teacher struct {
+	Id        int64  `orm:"id,primary" json:"id"`        // 老师编号
+	Name      string `orm:"name"       json:"name"`      // 老师姓名
+	Gender    string `orm:"gender"     json:"gender"`    // 老师性别
+	Phone     string `orm:"phone"      json:"phone"`     // 老师手机号
+	Email     string `orm:"email"      json:"email"`     // 老师邮箱
+	Introduce string `orm:"introduce"  json:"introduce"` // 老师简介
+}
+
+// Team is the golang structure for table team.
+type Team struct {
+	Id        int64  `orm:"id,primary" json:"id"`        // 编号
+	Introduce string `orm:"introduce"  json:"introduce"` // 简介
+	Game      int64  `orm:"game"       json:"game"`      // 比赛名
 }

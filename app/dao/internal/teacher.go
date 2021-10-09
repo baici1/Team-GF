@@ -6,6 +6,7 @@ package internal
 
 import (
 	"context"
+
 	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/frame/g"
 )
@@ -19,12 +20,12 @@ type TeacherDao struct {
 
 // TeacherColumns defines and stores column names for table teacher.
 type TeacherColumns struct {
-	Id        string //
-	Name      string //
-	Gender    string //
-	Phone     string //
-	Email     string //
-	Introduce string //
+	Id        string // 老师编号
+	Name      string // 老师姓名
+	Gender    string // 老师性别
+	Phone     string // 老师手机号
+	Email     string // 老师邮箱
+	Introduce string // 老师简介
 }
 
 //  teacherColumns holds the columns for table teacher.
