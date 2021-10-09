@@ -10,6 +10,7 @@ var User = userService{}
 
 type userService struct{}
 
+// SignUp 学生用户注册功能
 func (u *userService) SignUp(s *model.StuServiceSignUpReq) error {
 	//学号唯一性检验
 	if !u.CheckStuID(s.Stuid) {

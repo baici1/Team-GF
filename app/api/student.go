@@ -37,7 +37,7 @@ func (*studentApi) SignUp(r *ghttp.Request) {
 	}
 	//类型转换--将请求的参数转换成业务参数
 	if err := gconv.Struct(apiReq, &serviceReq); err != nil {
-		response.ResponseError(r, code.CodeServerBusy, err.Error())
+		response.ResponseError(r, code.CodeServerBusy)
 	}
 	//添加编号
 	id := snowflake.GenID()

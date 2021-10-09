@@ -52,8 +52,8 @@
 [gfcli]
     # 自定义DAO生成配置(默认是读取database配置)
     [[gfcli.gen.dao]]
-            link   = "mysql:root:123456@tcp(127.0.0.1:3306)/team"
-            tables = "student"
+#             link   = "mysql:root:123456@tcp(127.0.0.1:3306)/team"
+#             tables = "student"
     #打包配置
     [gfcli.build]
             name     = "my-application"
@@ -67,5 +67,6 @@
             extra    = ""
 
 [app]
+# 用于生成雪花算法的id
     startTime= "2006-01-02" #开始时间
     machineId= 108 #机器码

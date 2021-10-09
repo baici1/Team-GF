@@ -8,8 +8,7 @@ import (
 
 var node *snowflake.Node
 
-//初始化snowflake 配置相关信息（相对时间，机器号）
-
+// Init 初始化snowflake 配置相关信息（相对时间，机器号）
 func Init(startTime string, machineID int64) (err error) {
 	var st time.Time
 	st, err = time.Parse("2006-01-02", startTime)

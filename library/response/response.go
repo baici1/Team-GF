@@ -14,11 +14,15 @@ type JsonResponse struct {
 	Data interface{}  `json:"data,omitempty"` //返回数据
 }
 
-func ResponseError(r *ghttp.Request, code code.ResCode, msg interface{}) {
+// ResponseError 返回自定义错误信息（可以选择带信息，或者利用code自带的信息）
+func ResponseError(r *ghttp.Request, code code.ResCode, msg ...interface{}) {
 	rd := &JsonResponse{
 		Code: code,
-		Msg:  msg,
+		Msg:  code.Msg(),
 		Data: nil,
+	}
+	if len(msg) > 0 {
+		rd.Msg = msg[0]
 	}
 	if err := r.Response.WriteJson(rd); err != nil {
 		g.Log().Debug("请求输出数据返回失败", err.Error())
