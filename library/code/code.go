@@ -9,10 +9,10 @@ type ResCode int64
 const (
 	CodeSuccess         ResCode = 1000 + iota //成功
 	CodeInvalidParam                          //请求参数出错
-	CodeUserExist                             // 用户已存在
-	CodeUserNoExist                           //  用户不存在
-	CodeInvalidPassword                       //  用户名或密码错误
-	CodeServerBusy                            // 服务繁忙
+	CodeUserExist                             //用户已存在
+	CodeUserNoExist                           //用户不存在
+	CodeInvalidPassword                       //学号或密码错误
+	CodeServerBusy                            //服务繁忙
 	CodeInvalidToken                          //token无效
 	CodeNeedLogin                             //需要登录
 	CodeOperation                             //错误操作

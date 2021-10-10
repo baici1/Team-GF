@@ -4,7 +4,37 @@
         "contact": {}
     },
     "paths": {
-        "/user/signup": {
+        "/stu/signin": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户服务"
+                ],
+                "summary": "用户登录接口",
+                "parameters": [
+                    {
+                        "description": "注册请求",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.StuApiSignInReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "执行结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stu/signup": {
             "post": {
                 "produces": [
                     "application/json"
@@ -36,6 +66,17 @@
         }
     },
     "definitions": {
+        "model.StuApiSignInReq": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "stuid": {
+                    "type": "string"
+                }
+            }
+        },
         "model.StuApiSignUpReq": {
             "type": "object",
             "properties": {

@@ -45,8 +45,14 @@ func (u *userService) SignIn(s *model.StuApiSignInReq) (string, error) {
 		g.Log().Error("查询学生信息发生错误!", err.Error())
 		return "", model.ErrorQueryFailedUser
 	}
+	//如果查询结果为nil，那么账号和密码发生错误
 	if stu == nil {
 		return "", model.ErrorInvalidUser
 	}
-	return jwt.GenerateToken(stu.Id)
+	//返回生成的token信息
+	token, err := jwt.GenerateToken(stu.Id)
+	if err != nil {
+		return "", model.ErrorGenerateTokenFailed
+	}
+	return token, nil
 }
