@@ -4,6 +4,25 @@
         "contact": {}
     },
     "paths": {
+        "/stu/get": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户服务"
+                ],
+                "summary": "用户获取详细信息接口",
+                "responses": {
+                    "200": {
+                        "description": "执行结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/stu/signin": {
             "post": {
                 "produces": [
@@ -15,7 +34,7 @@
                 "summary": "用户登录接口",
                 "parameters": [
                     {
-                        "description": "注册请求",
+                        "description": "登录请求",
                         "name": "entity",
                         "in": "body",
                         "required": true,
@@ -63,6 +82,36 @@
                     }
                 }
             }
+        },
+        "/stu/submit": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户服务"
+                ],
+                "summary": "用户提交信息接口",
+                "parameters": [
+                    {
+                        "description": "提交信息请求",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.StuApiSubmitDataReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "执行结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -87,6 +136,23 @@
                     "type": "string"
                 },
                 "stuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.StuApiSubmitDataReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "integer"
+                },
+                "introduce": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }

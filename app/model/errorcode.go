@@ -10,4 +10,5 @@ var (
 	ErrorInvalidUser         = errors.New("学号或密码错误")
 	ErrorInvalidID           = errors.New("无效的ID")
 	ErrorGenerateTokenFailed = errors.New("生成token失败")
+	ErrorWriteData           = errors.New("写入信息出错")
 )

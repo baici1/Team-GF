@@ -14,8 +14,31 @@ type StuServiceSignUpReq struct {
 	ID       string
 }
 
-//学生登录的请求参数
+// StuApiSignInReq 学生登录的请求参数
 type StuApiSignInReq struct {
 	Stuid    string `json:"stuid" v:"required#学号不能为空"`
 	Password string `json:"password" v:"required#密码不能为空"`
+}
+
+// StuApiSubmitDataReq 学生提交信息
+type StuApiSubmitDataReq struct {
+	Name      string `json:"name"`
+	Gender    int    `json:"gender" v:"in:1,0,...#性别请选择男或者女"`
+	Email     string `json:"email" v:"email#请输入正确的邮箱"`
+	Introduce string `json:"introduce"`
+}
+
+// StuApiGetDataRes 返回学生相关信息
+type StuApiGetDataRes struct {
+	Stuid     string `json:"stuid,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Gander    int    `json:"gander,omitempty"`
+	Email     string `json:"email,omitempty"`
+	Introduce string `json:"introduce,omitempty"`
+}
+
+type StuApiCreateTeam struct {
+	Name      string `json:"name" v:"required#队伍名字不能为空"`
+	Game      int64  `json:"game" v:"required#需要选择比赛"`
+	Introduce string `json:"introduce" v:"required#队伍介绍不能为空"`
 }

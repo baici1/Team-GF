@@ -19,6 +19,13 @@ func init() {
 		group.Group("/", func(group *ghttp.RouterGroup) {
 			group.Middleware(service.Middleware.JWTAuthMiddleware)
 			group.ALL("/ping", api.Student.Ping)
+			group.POST("/submit", api.Student.SubmitUserData)
+			group.GET("/get", api.Student.GetUserDate)
+		})
+		group.Group("/team", func(group *ghttp.RouterGroup) {
+			group.Middleware(service.Middleware.JWTAuthMiddleware)
+			group.POST("/create", api.Student.CreateOwnTeam)
 		})
 	})
+
 }

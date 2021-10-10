@@ -4,8 +4,6 @@ import (
 	"team-gf/app/dao"
 	"team-gf/app/model"
 	"team-gf/library/jwt"
-
-	"github.com/gogf/gf/frame/g"
 )
 
 // User 管理学生相关user服务
@@ -20,7 +18,7 @@ func (u *userService) SignUp(s *model.StuServiceSignUpReq) error {
 		return model.ErrorUserExist
 	}
 	if _, err := dao.Student.DB().Model("student").Save(s); err != nil {
-		g.Log().Error("存储学生信息发生错误", err.Error())
+
 		return err
 	}
 	return nil
@@ -35,15 +33,15 @@ func (u *userService) CheckStuID(stuid string) bool {
 	}
 }
 
-// 学生登录功能
+// SignIn 学生登录功能
 func (u *userService) SignIn(s *model.StuApiSignInReq) (string, error) {
 	//创建学生信息对象
 	var stu *model.Student
 	//查询学生信息
 	err := dao.Student.DB().Model("student").Where("stuid=? and password=?", s.Stuid, s.Password).Scan(&stu)
 	if err != nil {
-		g.Log().Error("查询学生信息发生错误!", err.Error())
-		return "", model.ErrorQueryFailedUser
+
+		return "", err
 	}
 	//如果查询结果为nil，那么账号和密码发生错误
 	if stu == nil {
@@ -52,7 +50,36 @@ func (u *userService) SignIn(s *model.StuApiSignInReq) (string, error) {
 	//返回生成的token信息
 	token, err := jwt.GenerateToken(stu.Id)
 	if err != nil {
-		return "", model.ErrorGenerateTokenFailed
+		return "", err
 	}
 	return token, nil
+}
+
+// SubmitUserData 提交user信息到数据库中
+func (u *userService) SubmitUserData(data *model.StuApiSubmitDataReq, id int64) error {
+	_, err := dao.Student.DB().Model("student").Where("id", id).Update(data)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetUserData 查询user相关信息，并返回
+func (u *userService) GetUserData(id int64) (data *model.StuApiGetDataRes, err error) {
+	err = dao.Student.DB().Model("student").Where("id", id).Scan(&data)
+	if err != nil {
+		return data, err
+	}
+	if data == nil {
+		err = model.ErrorQueryFailedUser
+	}
+	return
+}
+
+// CreateOwnTeam 用户创建team
+func (u *userService) CreateOwnTeam(t *model.Team) error {
+	if _, err := dao.Team.DB().Model("team").Save(t); err != nil {
+		return err
+	}
+	return nil
 }

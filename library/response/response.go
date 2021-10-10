@@ -31,11 +31,15 @@ func ResponseError(r *ghttp.Request, code code.ResCode, msg ...interface{}) {
 }
 
 // ResponseSuccess 返回请求成功的数据
-func ResponseSuccess(r *ghttp.Request, code code.ResCode, data interface{}) {
+func ResponseSuccess(r *ghttp.Request, code code.ResCode, data ...interface{}) {
+
 	rd := &JsonResponse{
 		Code: code,
 		Msg:  code.Msg(),
 		Data: data,
+	}
+	if len(data) > 0 {
+		rd.Data = data[0]
 	}
 	if err := r.Response.WriteJson(rd); err != nil {
 		g.Log().Debug("请求输出数据返回失败", err.Error())

@@ -21,7 +21,7 @@ type StudentDao struct {
 type StudentColumns struct {
 	Id        string // 学生编号
 	Name      string // 学生姓名
-	Gender    string // 学生性别
+	Gender    string // 学生性别 0是女生 1是男生 默认为女生
 	Stuid     string // 学生学号
 	Password  string // 学生密码
 	Email     string // 学生邮箱

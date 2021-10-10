@@ -6,7 +6,6 @@ package internal
 
 import (
 	"context"
-
 	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/frame/g"
 )
@@ -21,15 +20,19 @@ type TeamDao struct {
 // TeamColumns defines and stores column names for table team.
 type TeamColumns struct {
 	Id        string // 编号
+	Name      string // 队伍名字
 	Introduce string // 简介
 	Game      string // 比赛名
+	Creator   string // 创建者的id
 }
 
 //  teamColumns holds the columns for table team.
 var teamColumns = TeamColumns{
 	Id:        "id",
+	Name:      "name",
 	Introduce: "introduce",
 	Game:      "game",
+	Creator:   "creator",
 }
 
 // NewTeamDao creates and returns a new DAO object for table data access.
