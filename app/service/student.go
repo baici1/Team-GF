@@ -2,6 +2,7 @@ package service
 
 import (
 	"team-gf/app/dao"
+	"team-gf/app/dao/redis"
 	"team-gf/app/model"
 	"team-gf/library/jwt"
 )
@@ -79,6 +80,9 @@ func (u *userService) GetUserData(id int64) (data *model.StuApiGetDataRes, err e
 // CreateOwnTeam 用户创建team
 func (u *userService) CreateOwnTeam(t *model.Team) error {
 	if _, err := dao.Team.DB().Model("team").Save(t); err != nil {
+		return err
+	}
+	if err := redis.Team.CreateOwnTeam(t.Id, t.Creator); err != nil {
 		return err
 	}
 	return nil
