@@ -13,4 +13,5 @@ var (
 	ErrorWriteData           = errors.New("写入信息出错")
 	ErrorRepeatUser          = errors.New("有重复用户")
 	ErrorQueryDataEmpty      = errors.New("查询信息不存在")
+	ErrorTeamNotExist        = errors.New("队伍不存在")
 )

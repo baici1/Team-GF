@@ -54,6 +54,7 @@
 #配置redis
 [redis]
     default = "127.0.0.1:6379,1"
+    debug = true
 # GF-CLI工具配置
 [gfcli]
     # 自定义DAO生成配置(默认是读取database配置)

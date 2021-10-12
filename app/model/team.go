@@ -16,7 +16,7 @@ type TeamApiTeamAllDetailRes struct {
 	Members   []*StuApiGetDetailRes `json:"members"`
 }
 
-// TeamApiAppendUserInTeamReq 用户进入队伍
+// TeamApiAppendStuInTeamReq 用户进入队伍
 type TeamApiAppendStuInTeamReq struct {
 	Team    int64 `json:"team,omitempty" v:"required#请选择队伍"`
 	Student int64 `json:"student,omitempty" v:"required#请选择需要邀请的学生"`

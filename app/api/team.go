@@ -14,9 +14,43 @@ import (
 	"github.com/gogf/gf/util/gconv"
 )
 
-var Team = teamApi{}
+// TeamCommon 公共组队相关的api
+var TeamCommon = comonApi{}
 
-type teamApi struct{}
+type comonApi struct{}
+
+// TeamLeader 身份是leader
+var TeamLeader = leaderApi{}
+
+type leaderApi struct{}
+
+// TeamMember 身份是member
+var TeamMember = memberApi{}
+
+type memberApi struct{}
+
+// TeamVisitor 身份是visitor
+var TeamVisitor = visitorApi{}
+
+type visitorApi struct{}
+
+// GetTeamAllDetail （任何人）查询队伍信息,包括队员的信息，比赛信息
+func (*comonApi) GetTeamAllDetail(r *ghttp.Request) {
+	var teamId int64
+	teamId = gconv.Int64(r.Get("teamId"))
+	if teamId == 0 {
+		g.Log().Debug("参数获取 teamId failed")
+		response.ResponseError(r, code.CodeInvalidParam)
+	}
+	Res, err := service.TeamCommon.GetTeamAllDetail(teamId)
+	if err != nil {
+		if errors.Is(err, model.ErrorQueryDataEmpty) {
+			response.ResponseError(r, code.CodeQueryDataEmpty)
+		}
+		response.ResponseError(r, code.CodeServerBusy)
+	}
+	response.ResponseError(r, code.CodeSuccess, Res)
+}
 
 // CreateOwnTeam 用户创建Team
 // @summary 用户给比赛创建Team
@@ -25,7 +59,7 @@ type teamApi struct{}
 // @param   entity  body model.StuApiCreateTeam true "提交信息请求"
 // @router  /stu/create/team [POST]
 // @success 200 {object} response.JsonResponse "执行结果"
-func (*teamApi) CreateOwnTeam(r *ghttp.Request) {
+func (*leaderApi) CreateOwnTeam(r *ghttp.Request) {
 	//创建请求得参数
 	var (
 		apiReq     *model.TeamApiCreateTeamReq
@@ -44,33 +78,15 @@ func (*teamApi) CreateOwnTeam(r *ghttp.Request) {
 	//业务逻辑函数
 	serviceReq.Id = snowflake.GenID()
 	serviceReq.Creator = r.GetParam(service.ContextUserIDKey).(int64)
-	if err := service.Team.CreateOwnTeam(serviceReq); err != nil {
+	if err := service.TeamLeader.CreateOwnTeam(serviceReq); err != nil {
 		g.Log().Error("service.User.CreatOwnTeam failed", err.Error())
 		response.ResponseError(r, code.CodeServerBusy)
 	}
 	response.ResponseSuccess(r, code.CodeSuccess)
 }
 
-// GetTeamAllDetail （任何人）查询队伍信息,包括队员的信息，比赛信息
-func (*teamApi) GetTeamAllDetail(r *ghttp.Request) {
-	var teamId int64
-	teamId = gconv.Int64(r.Get("teamId"))
-	if teamId == 0 {
-		g.Log().Debug("参数获取 teamId failed")
-		response.ResponseError(r, code.CodeInvalidParam)
-	}
-	Res, err := service.Team.GetTeamAllDetail(teamId)
-	if err != nil {
-		if errors.Is(err, model.ErrorQueryDataEmpty) {
-			response.ResponseError(r, code.CodeQueryDataEmpty)
-		}
-		response.ResponseError(r, code.CodeServerBusy)
-	}
-	response.ResponseError(r, code.CodeSuccess, Res)
-}
-
-// PushStuInTeam 用户加入队伍
-func (*teamApi) PushStuInTeam(r *ghttp.Request) {
+// PushStuInTeam leader让用户加入队伍
+func (*leaderApi) PushStuInTeam(r *ghttp.Request) {
 	//创建参数对象
 	var (
 		apiReq *model.TeamApiAppendStuInTeamReq
@@ -86,9 +102,12 @@ func (*teamApi) PushStuInTeam(r *ghttp.Request) {
 		response.ResponseError(r, code.CodeRepeatUser)
 	}
 	//业务逻辑
-	if err := service.Team.AppendStuInTeam(apiReq); err != nil {
+	if err := service.TeamLeader.AppendStuInTeam(apiReq); err != nil {
 		if errors.Is(err, model.ErrorRepeatUser) {
 			response.ResponseError(r, code.CodeRepeatUser)
+		}
+		if errors.Is(err, model.ErrorTeamNotExist) {
+			response.ResponseError(r, code.CodeTeamNotExist)
 		}
 		response.ResponseError(r, code.CodeServerBusy)
 	}
@@ -96,7 +115,7 @@ func (*teamApi) PushStuInTeam(r *ghttp.Request) {
 }
 
 // RemoveUserAtTeam leader删除队伍中的用户
-func (*teamApi) RemoveUserAtTeam(r *ghttp.Request) {
+func (*leaderApi) RemoveUserAtTeam(r *ghttp.Request) {
 	var (
 		apiReq *model.TeamApiRemoveStuAtTeamReq
 	)
@@ -105,7 +124,7 @@ func (*teamApi) RemoveUserAtTeam(r *ghttp.Request) {
 		response.ResponseError(r, code.CodeInvalidParam, gerror.Current(err).Error())
 	}
 	//业务逻辑函数
-	if err := service.Team.RemoveStuAtTeam(apiReq); err != nil {
+	if err := service.TeamLeader.RemoveStuAtTeam(apiReq); err != nil {
 		g.Log().Error("service.Team.RemoveStuAtTeam", err.Error())
 		response.ResponseError(r, code.CodeServerBusy)
 	}
@@ -113,15 +132,31 @@ func (*teamApi) RemoveUserAtTeam(r *ghttp.Request) {
 }
 
 // DeleteOwnTeam leader删除队伍
-func (*teamApi) DeleteOwnTeam(r *ghttp.Request) {
+func (*leaderApi) DeleteOwnTeam(r *ghttp.Request) {
 	var teamId int64
 	teamId = gconv.Int64(r.Get("team"))
 	if teamId == 0 {
 		g.Log().Debug("参数获取 teamId failed")
 		response.ResponseError(r, code.CodeInvalidParam)
 	}
-	if err := service.Team.DeleteOwnTeam(teamId); err != nil {
+	if err := service.TeamLeader.DeleteOwnTeam(teamId); err != nil {
 		g.Log().Error("service.Team.DeleteOwnTeam failed", err.Error())
+		response.ResponseError(r, code.CodeServerBusy)
+	}
+	response.ResponseSuccess(r, code.CodeSuccess)
+}
+
+// LeaveToTeam 用户离开队伍
+func (*memberApi) LeaveToTeam(r *ghttp.Request) {
+	var teamId int64
+	//获取请求参数
+	teamId = gconv.Int64(r.Get("team"))
+	if teamId == 0 {
+		response.ResponseError(r, code.CodeInvalidParam)
+	}
+	stuId := gconv.Int64(r.GetParam(service.ContextUserIDKey))
+	g.Log().Debug(stuId)
+	if err := service.TeamMember.LeaveToTeam(teamId, stuId); err != nil {
 		response.ResponseError(r, code.CodeServerBusy)
 	}
 	response.ResponseSuccess(r, code.CodeSuccess)

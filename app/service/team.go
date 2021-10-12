@@ -9,21 +9,25 @@ import (
 	"github.com/gogf/gf/frame/g"
 )
 
-// Team 管理学生相关user服务
-var Team = teamService{}
+// TeamCommon 管理学生相关user服务
+var TeamCommon = teamService{}
 
 type teamService struct{}
 
-// CreateOwnTeam 用户创建team
-func (*teamService) CreateOwnTeam(t *model.Team) error {
-	if _, err := dao.Team.DB().Model("team").Save(t); err != nil {
-		return err
-	}
-	if err := redis.Team.CreateOwnTeam(t.Id, t.Creator); err != nil {
-		return err
-	}
-	return nil
-}
+// TeamLeader 身份是leader
+var TeamLeader = leaderService{}
+
+type leaderService struct{}
+
+// TeamMember 身份是member
+var TeamMember = memberService{}
+
+type memberService struct{}
+
+// TeamVisitor 身份是visitor
+var TeamVisitor = visitorService{}
+
+type visitorService struct{}
 
 // GetTeamAllDetail （任何人）查询队伍详细信息包括队员的信息，比赛信息
 func (*teamService) GetTeamAllDetail(teamId int64) (data *model.TeamApiTeamAllDetailRes, err error) {
@@ -74,8 +78,19 @@ func (*teamService) GetTeamAllDetail(teamId int64) (data *model.TeamApiTeamAllDe
 	return
 }
 
+// CreateOwnTeam 用户创建team
+func (*leaderService) CreateOwnTeam(t *model.Team) error {
+	if _, err := dao.Team.DB().Model("team").Save(t); err != nil {
+		return err
+	}
+	if err := redis.Team.CreateOwnTeam(t.Id, t.Creator); err != nil {
+		return err
+	}
+	return nil
+}
+
 // AppendStuInTeam 添加队员进入队伍，防止有重复队员进入队伍
-func (*teamService) AppendStuInTeam(req *model.TeamApiAppendStuInTeamReq) error {
+func (*leaderService) AppendStuInTeam(req *model.TeamApiAppendStuInTeamReq) error {
 	//查询队伍中是否有重复的学生
 	stus, err := redis.Team.GetTeamMembers(req.Team)
 	if err != nil {
@@ -93,7 +108,7 @@ func (*teamService) AppendStuInTeam(req *model.TeamApiAppendStuInTeamReq) error 
 }
 
 // RemoveStuAtTeam leader删除队伍中的队员
-func (*teamService) RemoveStuAtTeam(req *model.TeamApiRemoveStuAtTeamReq) error {
+func (*leaderService) RemoveStuAtTeam(req *model.TeamApiRemoveStuAtTeamReq) error {
 	if err := redis.Team.RemoveStuAtTeam(req); err != nil {
 		return err
 	}
@@ -101,13 +116,21 @@ func (*teamService) RemoveStuAtTeam(req *model.TeamApiRemoveStuAtTeamReq) error 
 }
 
 // DeleteOwnTeam leader删除队伍
-func (*teamService) DeleteOwnTeam(teamid int64) error {
+func (*leaderService) DeleteOwnTeam(teamid int64) error {
 	//从redis删除队伍信息
 	if err := redis.Team.DeleteOwnTeam(teamid); err != nil {
 		return err
 	}
 	//从mysql删除队伍信息
 	if _, err := dao.Team.DB().Model("team").Where("id", teamid).Delete(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// LeaveToTeam 成员退出队伍
+func (*memberService) LeaveToTeam(teamid int64, stuid int64) error {
+	if err := redis.Team.LeaveToTeam(teamid, stuid); err != nil {
 		return err
 	}
 	return nil
