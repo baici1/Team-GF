@@ -11,21 +11,24 @@ import (
 func init() {
 	s := g.Server()
 	s.Use(service.Middleware.CORS)
-	s.Group("/stu", func(group *ghttp.RouterGroup) {
+	s.Group("/", func(group *ghttp.RouterGroup) {
 		//学生注册
 		group.POST("/signup", api.Student.SignUp)
 		//学生登录
 		group.POST("/signin", api.Student.SignIn)
-		group.Group("/", func(group *ghttp.RouterGroup) {
-			group.Middleware(service.Middleware.JWTAuthMiddleware)
+		group.Middleware(service.Middleware.JWTAuthMiddleware)
+		//这里路由只与用户相关的
+		group.Group("/stu", func(group *ghttp.RouterGroup) {
 			group.ALL("/ping", api.Student.Ping)
 			group.POST("/submit", api.Student.SubmitUserData)
 			group.GET("/get", api.Student.GetUserDate)
 		})
+		//这里是用户操作队伍相关的
 		group.Group("/team", func(group *ghttp.RouterGroup) {
-			group.Middleware(service.Middleware.JWTAuthMiddleware)
-			group.POST("/create", api.Student.CreateOwnTeam)
+			group.POST("/create", api.Team.CreateOwnTeam)
+			group.GET("/get", api.Team.GetTeamAllDetail)
+			group.POST("/push", api.Team.PushStuInTeam)
 		})
-	})
 
+	})
 }

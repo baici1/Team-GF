@@ -2,6 +2,9 @@ package redis
 
 import (
 	"strconv"
+	"team-gf/app/model"
+
+	"github.com/gogf/gf/util/gconv"
 
 	"github.com/gogf/gf/frame/g"
 )
@@ -16,5 +19,27 @@ func (*teamDao) CreateOwnTeam(teamId, userId int64) error {
 	key := getRedisKey(KeyCreateTeamListPrefix) + strconv.FormatInt(teamId, 10)
 	g.Log().Debug("redis-key", key)
 	_, err := g.Redis().Do("lpush", key, userId)
+	return err
+}
+
+// GetTeamMembers 获取队伍中的队员id集合
+func (*teamDao) GetTeamMembers(teamId int64) ([]int64, error) {
+	//获取相关key
+	key := getRedisKey(KeyCreateTeamListPrefix) + strconv.FormatInt(teamId, 10)
+	//获取除队长除外的成员id集合
+	value, err := g.Redis().DoVar("lrange", key, 1, -1)
+	if err != nil {
+		return nil, err
+	}
+	return value.Int64s(), err
+}
+
+// PushStuInTeam 添加队员进入队伍
+func (*teamDao) PushStuInTeam(req *model.TeamApiPushUserInTeamReq) error {
+	key := getRedisKey(KeyCreateTeamListPrefix) + gconv.String(req.Team)
+	_, err := g.Redis().DoVar("RPUSHX", key, req.Student)
+	if err != nil {
+		return err
+	}
 	return err
 }

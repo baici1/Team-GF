@@ -1,9 +1,45 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "项目team-GF服务API接口文档。",
+        "title": "team-GF服务API",
+        "contact": {},
+        "version": "1.0"
     },
     "paths": {
+        "/stu/create/team": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户服务"
+                ],
+                "summary": "用户给比赛创建Team",
+                "parameters": [
+                    {
+                        "description": "提交信息请求",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.StuApiCreateTeam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "执行结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/stu/get": {
             "get": {
                 "produces": [
@@ -115,6 +151,20 @@
         }
     },
     "definitions": {
+        "model.StuApiCreateTeam": {
+            "type": "object",
+            "properties": {
+                "game": {
+                    "type": "integer"
+                },
+                "introduce": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "model.StuApiSignInReq": {
             "type": "object",
             "properties": {

@@ -74,7 +74,7 @@ func (*studentApi) SignIn(r *ghttp.Request) {
 	)
 	//获取登录请求的参数
 	if err := r.Parse(&data); err != nil {
-		g.Log().Error("获取参数 failed", err.Error())
+		g.Log().Error("获取参数 model.StuApiSignInReq failed", err.Error())
 		response.ResponseError(r, code.CodeInvalidParam, gerror.Current(err).Error())
 	}
 	//业务处理函数
@@ -106,7 +106,7 @@ func (*studentApi) SubmitUserData(r *ghttp.Request) {
 	)
 	//获取请求的参数
 	if err := r.Parse(&apiReq); err != nil {
-		g.Log().Error("获取参数 failed", err.Error())
+		g.Log().Error("获取参数 model.StuApiSubmitDataReq failed", err.Error())
 		response.ResponseError(r, code.CodeInvalidParam, gerror.Current(err).Error())
 	}
 	//获取用户id
@@ -128,7 +128,7 @@ func (*studentApi) SubmitUserData(r *ghttp.Request) {
 func (*studentApi) GetUserDate(r *ghttp.Request) {
 	//创建学生返回信息对象
 	var (
-		apiRes *model.StuApiGetDataRes
+		apiRes *model.StuApiGetDetailRes
 	)
 	//获取学生id
 	id := r.GetParam(service.ContextUserIDKey)
@@ -139,31 +139,4 @@ func (*studentApi) GetUserDate(r *ghttp.Request) {
 		response.ResponseError(r, code.CodeServerBusy)
 	}
 	response.ResponseSuccess(r, code.CodeSuccess, apiRes)
-}
-
-// CreateOwnTeam 用户创建Team
-func (*studentApi) CreateOwnTeam(r *ghttp.Request) {
-	//创建请求得参数
-	var (
-		apiReq     *model.StuApiCreateTeam
-		serviceReq *model.Team
-	)
-	//获取请求中得参数
-	if err := r.Parse(&apiReq); err != nil {
-		g.Log().Error("获取参数 failed", err.Error())
-		response.ResponseError(r, code.CodeInvalidParam, gerror.Current(err).Error())
-	}
-	//类型转换-方便后续业务函数使用
-	if err := gconv.Struct(apiReq, &serviceReq); err != nil {
-		g.Log().Error("gconv.Struct failed", err.Error())
-		response.ResponseError(r, code.CodeServerBusy)
-	}
-	//业务逻辑函数
-	serviceReq.Id = snowflake.GenID()
-	serviceReq.Creator = r.GetParam(service.ContextUserIDKey).(int64)
-	if err := service.User.CreateOwnTeam(serviceReq); err != nil {
-		g.Log().Error("service.User.CreatOwnTeam failed", err.Error())
-		response.ResponseError(r, code.CodeServerBusy)
-	}
-	response.ResponseSuccess(r, code.CodeSuccess)
 }

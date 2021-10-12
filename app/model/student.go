@@ -28,17 +28,11 @@ type StuApiSubmitDataReq struct {
 	Introduce string `json:"introduce"`
 }
 
-// StuApiGetDataRes 返回学生相关信息
-type StuApiGetDataRes struct {
+// StuApiGetDetailRes 返回学生相关信息
+type StuApiGetDetailRes struct {
 	Stuid     string `json:"stuid,omitempty"`
 	Name      string `json:"name,omitempty"`
 	Gander    int    `json:"gander,omitempty"`
 	Email     string `json:"email,omitempty"`
 	Introduce string `json:"introduce,omitempty"`
-}
-
-type StuApiCreateTeam struct {
-	Name      string `json:"name" v:"required#队伍名字不能为空"`
-	Game      int64  `json:"game" v:"required#需要选择比赛"`
-	Introduce string `json:"introduce" v:"required#队伍介绍不能为空"`
 }

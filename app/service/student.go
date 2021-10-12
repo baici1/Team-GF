@@ -2,7 +2,6 @@ package service
 
 import (
 	"team-gf/app/dao"
-	"team-gf/app/dao/redis"
 	"team-gf/app/model"
 	"team-gf/library/jwt"
 )
@@ -66,7 +65,7 @@ func (u *userService) SubmitUserData(data *model.StuApiSubmitDataReq, id int64) 
 }
 
 // GetUserData 查询user相关信息，并返回
-func (u *userService) GetUserData(id int64) (data *model.StuApiGetDataRes, err error) {
+func (u *userService) GetUserData(id int64) (data *model.StuApiGetDetailRes, err error) {
 	err = dao.Student.DB().Model("student").Where("id", id).Scan(&data)
 	if err != nil {
 		return data, err
@@ -75,15 +74,4 @@ func (u *userService) GetUserData(id int64) (data *model.StuApiGetDataRes, err e
 		err = model.ErrorQueryFailedUser
 	}
 	return
-}
-
-// CreateOwnTeam 用户创建team
-func (u *userService) CreateOwnTeam(t *model.Team) error {
-	if _, err := dao.Team.DB().Model("team").Save(t); err != nil {
-		return err
-	}
-	if err := redis.Team.CreateOwnTeam(t.Id, t.Creator); err != nil {
-		return err
-	}
-	return nil
 }

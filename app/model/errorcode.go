@@ -11,4 +11,5 @@ var (
 	ErrorInvalidID           = errors.New("无效的ID")
 	ErrorGenerateTokenFailed = errors.New("生成token失败")
 	ErrorWriteData           = errors.New("写入信息出错")
+	ErrorRepeatUser          = errors.New("有重复用户")
 )
