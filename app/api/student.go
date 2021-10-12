@@ -136,6 +136,9 @@ func (*studentApi) GetUserDate(r *ghttp.Request) {
 	apiRes, err := service.User.GetUserData(id.(int64))
 	if err != nil {
 		g.Log().Error("service.User.GetUserData failed", err.Error())
+		if errors.Is(err, model.ErrorQueryDataEmpty) {
+			response.ResponseError(r, code.CodeQueryDataEmpty)
+		}
 		response.ResponseError(r, code.CodeServerBusy)
 	}
 	response.ResponseSuccess(r, code.CodeSuccess, apiRes)

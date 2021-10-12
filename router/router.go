@@ -28,6 +28,8 @@ func init() {
 			group.POST("/create", api.Team.CreateOwnTeam)
 			group.GET("/get", api.Team.GetTeamAllDetail)
 			group.POST("/push", api.Team.PushStuInTeam)
+			group.DELETE("/member", api.Team.RemoveUserAtTeam)
+			group.DELETE("/ownteam", api.Team.DeleteOwnTeam)
 		})
 
 	})

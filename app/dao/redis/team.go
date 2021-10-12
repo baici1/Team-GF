@@ -35,11 +35,31 @@ func (*teamDao) GetTeamMembers(teamId int64) ([]int64, error) {
 }
 
 // PushStuInTeam 添加队员进入队伍
-func (*teamDao) PushStuInTeam(req *model.TeamApiPushUserInTeamReq) error {
+func (*teamDao) AppendStuInTeam(req *model.TeamApiAppendStuInTeamReq) error {
 	key := getRedisKey(KeyCreateTeamListPrefix) + gconv.String(req.Team)
 	_, err := g.Redis().DoVar("RPUSHX", key, req.Student)
 	if err != nil {
 		return err
 	}
 	return err
+}
+
+// RemoveStuAtTeam 队伍中删除队员
+func (*teamDao) RemoveStuAtTeam(req *model.TeamApiRemoveStuAtTeamReq) error {
+	key := getRedisKey(KeyCreateTeamListPrefix) + gconv.String(req.Team)
+	_, err := g.Redis().DoVar("LREM", key, 1, req.Student)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//leader删除队伍中的队员
+func (*teamDao) DeleteOwnTeam(team int64) error {
+	key := getRedisKey(KeyCreateTeamListPrefix) + gconv.String(team)
+	_, err := g.Redis().DoVar("DEL", key)
+	if err != nil {
+		return err
+	}
+	return nil
 }
