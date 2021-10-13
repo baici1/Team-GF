@@ -15,9 +15,9 @@ import (
 )
 
 // TeamCommon 公共组队相关的api
-var TeamCommon = comonApi{}
+var TeamCommon = commonApi{}
 
-type comonApi struct{}
+type commonApi struct{}
 
 // TeamLeader 身份是leader
 var TeamLeader = leaderApi{}
@@ -35,7 +35,7 @@ var TeamVisitor = visitorApi{}
 type visitorApi struct{}
 
 // GetTeamAllDetail （任何人）查询队伍信息,包括队员的信息，比赛信息
-func (*comonApi) GetTeamAllDetail(r *ghttp.Request) {
+func (*commonApi) GetTeamAllDetail(r *ghttp.Request) {
 	var teamId int64
 	teamId = gconv.Int64(r.Get("teamId"))
 	if teamId == 0 {
@@ -45,11 +45,34 @@ func (*comonApi) GetTeamAllDetail(r *ghttp.Request) {
 	Res, err := service.TeamCommon.GetTeamAllDetail(teamId)
 	if err != nil {
 		if errors.Is(err, model.ErrorQueryDataEmpty) {
-			response.ResponseError(r, code.CodeQueryDataEmpty)
+			response.ResponseError(r, code.CodeTeamNotExist)
 		}
 		response.ResponseError(r, code.CodeServerBusy)
 	}
 	response.ResponseError(r, code.CodeSuccess, Res)
+}
+
+// GetOwnTeams 用户查询自己的参加的队伍信息
+func (*commonApi) GetOwnTeams(r *ghttp.Request) {
+	var (
+		ApiRes []*model.TeamApiTeamsDetailRes
+	)
+	//如果没有获取到gameId参数，则返回全部参加的队伍信息，如果有则返回参加的队伍信息
+	//参数为0则代表全部队伍信息，如果>0则返回相对应的比赛队伍信息
+	gameId := gconv.Int64(r.Get("game"))
+	stuId := r.GetParam(service.ContextUserIDKey)
+	ApiRes, err := service.TeamCommon.GetTeamsDetail(gameId, gconv.Int64(stuId))
+	if err != nil {
+		g.Log().Error(err.Error())
+		response.ResponseError(r, code.CodeServerBusy)
+	}
+	response.ResponseSuccess(r, code.CodeSuccess, ApiRes)
+}
+
+// GetOtherGameTeams 显示不同比赛的队伍
+func (*commonApi) GetOtherGameTeams(r *ghttp.Request) {
+	//gameId := gconv.Int64(r.Get("game"))
+
 }
 
 // CreateOwnTeam 用户创建Team

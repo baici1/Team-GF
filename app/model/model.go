@@ -26,7 +26,7 @@ type Student struct {
 type Teacher struct {
 	Id        int64  `orm:"id,primary" json:"id"`        // 老师编号
 	Name      string `orm:"name"       json:"name"`      // 老师姓名
-	Gender    string `orm:"gender"     json:"gender"`    // 老师性别
+	Gender    int64  `orm:"gender"     json:"gender"`    // 老师性别 1是男生 0是女生
 	Phone     string `orm:"phone"      json:"phone"`     // 老师手机号
 	Email     string `orm:"email"      json:"email"`     // 老师邮箱
 	Introduce string `orm:"introduce"  json:"introduce"` // 老师简介
@@ -39,4 +39,5 @@ type Team struct {
 	Introduce string `orm:"introduce"  json:"introduce"` // 简介
 	Game      int64  `orm:"game"       json:"game"`      // 比赛名
 	Creator   int64  `orm:"creator"    json:"creator"`   // 创建者的id
+	Teacher   int64  `orm:"teacher"    json:"teacher"`   // 指导老师
 }

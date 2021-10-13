@@ -26,6 +26,7 @@ func init() {
 		group.Group("/team", func(group *ghttp.RouterGroup) {
 			//三个身份共同的api
 			group.GET("/check", api.TeamCommon.GetTeamAllDetail)
+			group.GET("/seek", api.TeamCommon.GetOwnTeams)
 			//当用户为leader的api操作
 			group.Group("/leader", func(group *ghttp.RouterGroup) {
 				group.POST("/create", api.TeamLeader.CreateOwnTeam)

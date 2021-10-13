@@ -21,7 +21,7 @@ type TeacherDao struct {
 type TeacherColumns struct {
 	Id        string // 老师编号
 	Name      string // 老师姓名
-	Gender    string // 老师性别
+	Gender    string // 老师性别 1是男生 0是女生
 	Phone     string // 老师手机号
 	Email     string // 老师邮箱
 	Introduce string // 老师简介

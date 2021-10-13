@@ -24,6 +24,7 @@ type TeamColumns struct {
 	Introduce string // 简介
 	Game      string // 比赛名
 	Creator   string // 创建者的id
+	Teacher   string // 指导老师
 }
 
 //  teamColumns holds the columns for table team.
@@ -33,6 +34,7 @@ var teamColumns = TeamColumns{
 	Introduce: "introduce",
 	Game:      "game",
 	Creator:   "creator",
+	Teacher:   "teacher",
 }
 
 // NewTeamDao creates and returns a new DAO object for table data access.

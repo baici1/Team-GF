@@ -67,12 +67,29 @@ func (*teamDao) DeleteOwnTeam(team int64) error {
 	return nil
 }
 
-func (*teamDao) LeaveToTeam(teamid int64, stuid int64) error {
-	g.Log().Debug(teamid, stuid)
-	key := getRedisKey(KeyCreateTeamListPrefix) + gconv.String(teamid)
-	_, err := g.Redis().DoVar("LREM", key, 1, stuid)
+// LeaveToTeam 用户离开队伍
+func (*teamDao) LeaveToTeam(teamId int64, stuId int64) error {
+	key := getRedisKey(KeyCreateTeamListPrefix) + gconv.String(teamId)
+	_, err := g.Redis().DoVar("LREM", key, 1, stuId)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+// UserInTeams 每个用户创建一个队伍表。
+func (*teamDao) UserInTeams(teamId int64, stuId int64) error {
+	key := getRedisKey(KeyUserInTeamsPrefix) + gconv.String(stuId)
+	value, err := g.Redis().DoVar("RPUSHX", key, teamId)
+	if err != nil {
+		return err
+	}
+	//如果用户没有队伍表，那么就创建一个
+	if value.Int64() == 0 {
+		_, err = g.Redis().DoVar("lpush", key, teamId)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
