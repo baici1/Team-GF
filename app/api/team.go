@@ -69,11 +69,11 @@ func (*commonApi) GetOwnTeams(r *ghttp.Request) {
 	response.ResponseSuccess(r, code.CodeSuccess, ApiRes)
 }
 
-// GetOtherGameTeams 显示不同比赛的队伍
-func (*commonApi) GetOtherGameTeams(r *ghttp.Request) {
-	//gameId := gconv.Int64(r.Get("game"))
-
-}
+//// GetOtherGameTeams 显示不同比赛的队伍
+//func (*commonApi) GetOtherGameTeams(r *ghttp.Request) {
+//	//gameId := gconv.Int64(r.Get("game"))
+//
+//}
 
 // CreateOwnTeam 用户创建Team
 // @summary 用户给比赛创建Team
