@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"team-gf/app/dao"
+	"team-gf/app/dao/mysql"
 	"team-gf/app/dao/redis"
 	"team-gf/app/model"
 
@@ -60,20 +61,17 @@ func (*teamService) GetTeamAllDetail(teamId int64) (data *model.TeamApiTeamAllDe
 	if err := dao.Student.DB().Model("student").Where("id", memberIds).Scan(&members); err != nil {
 		return nil, err
 	}
-	//for _, memberid := range memberIds {
-	//	member, err := User.GetUserData(memberid)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	members = append(members, member)
-	//}
-	//获取详细比赛信息
+	for _, item := range members {
+		item.Gender = mysql.MysqlUtils.GetGender(item.Gender)
+	}
+	//获取比赛信息
 	game, err = Game.GetGameDetail(team.Game)
 	if err != nil {
 		return
 	}
 	//获取指导老师信息
 	teacher, err = Teacher.GetTeacherDetail(team.Teacher)
+	teacher.Gender = mysql.MysqlUtils.GetGender(teacher.Gender)
 	if err != nil {
 		return
 	}
@@ -88,23 +86,25 @@ func (*teamService) GetTeamAllDetail(teamId int64) (data *model.TeamApiTeamAllDe
 	return
 }
 
-// GetTeamsDetail 获取队伍信息
-func (*teamService) GetTeamsDetail(gameId int64, stuId int64) (data []*model.TeamApiTeamsDetailRes, err error) {
-	if gameId == 0 {
-		if err := dao.Team.DB().Model("team").With(model.Student{}).Where("creator", stuId).Scan(&data); err != nil {
-			if err == sql.ErrNoRows {
-				return nil, model.ErrorQueryDataEmpty
-			}
-			return nil, err
-		}
-	} else {
-		if err := dao.Team.DB().Model("team").With(model.Student{}).Where("creator=? and game=?", stuId, gameId).Scan(&data); err != nil {
-			if err == sql.ErrNoRows {
-				return nil, model.ErrorQueryDataEmpty
-			}
-			return nil, err
-		}
+// GetTeamsDetail 获取队伍信息，如果传递的值为0那么传递的是全部的信息，如果有值，那么传递具体比赛的的队伍信息
+func (*teamService) GetTeamsDetail(stuId int64) (data []*model.TeamApiTeamsDetailRes, err error) {
+	//获取参加的队伍信息表
+	teams, err := redis.Team.GetUserTeams(stuId)
+	if err != nil {
+		return nil, err
 	}
+	if err := dao.Team.DB().Model("team").Where("id", teams).Scan(&data); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, model.ErrorQueryDataEmpty
+		}
+		return nil, err
+	}
+	for _, item := range data {
+		item.Game, _ = mysql.MysqlUtils.GetGame(item.Game)
+		item.Teacher, _ = mysql.MysqlUtils.GetTeacher(item.Teacher)
+		item.Creator, _ = mysql.MysqlUtils.GetLeader(item.Creator)
+	}
+	g.Log().Debug(data)
 	return data, nil
 }
 
@@ -156,21 +156,21 @@ func (*leaderService) RemoveStuAtTeam(req *model.TeamApiRemoveStuAtTeamReq) erro
 }
 
 // DeleteOwnTeam leader删除队伍
-func (*leaderService) DeleteOwnTeam(teamid int64) error {
+func (*leaderService) DeleteOwnTeam(teamId int64) error {
 	//从redis删除队伍信息
-	if err := redis.Team.DeleteOwnTeam(teamid); err != nil {
+	if err := redis.Team.DeleteOwnTeam(teamId); err != nil {
 		return err
 	}
 	//从mysql删除队伍信息
-	if _, err := dao.Team.DB().Model("team").Where("id", teamid).Delete(); err != nil {
+	if _, err := dao.Team.DB().Model("team").Where("id", teamId).Delete(); err != nil {
 		return err
 	}
 	return nil
 }
 
 // LeaveToTeam 成员退出队伍
-func (*memberService) LeaveToTeam(teamid int64, stuid int64) error {
-	if err := redis.Team.LeaveToTeam(teamid, stuid); err != nil {
+func (*memberService) LeaveToTeam(teamId int64, stuId int64) error {
+	if err := redis.Team.LeaveToTeam(teamId, stuId); err != nil {
 		return err
 	}
 	return nil

@@ -15,7 +15,7 @@ type Game struct {
 type Student struct {
 	Id        int64  `orm:"id,primary" json:"id"`        // 学生编号
 	Name      string `orm:"name"       json:"name"`      // 学生姓名
-	Gender    int    `orm:"gender"     json:"gender"`    // 学生性别 0是女生 1是男生 默认为女生
+	Gender    int64  `orm:"gender"     json:"gender"`    // 学生性别 0是女生 1是男生 默认为女生
 	Stuid     string `orm:"stuid"      json:"stuid"`     // 学生学号
 	Password  string `orm:"password"   json:"password"`  // 学生密码
 	Email     string `orm:"email"      json:"email"`     // 学生邮箱

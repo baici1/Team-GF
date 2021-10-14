@@ -32,10 +32,9 @@ type TeamApiRemoveStuAtTeamReq struct {
 
 // TeamApiTeamsDetailRes 返回队伍的相关信息（仅仅是mysql）
 type TeamApiTeamsDetailRes struct {
-	Name      string   `json:"name,omitempty"`
-	Introduce string   `json:"introduce,omitempty"`
-	Game      string   `json:"game,omitempty"`
-	Creator   int64    `json:"creator,omitempty"`
-	Leader    *Student `json:"leader" orm:"with:id=creator"`
-	Teacher   string   `json:"teacher,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Introduce string `json:"introduce,omitempty"`
+	Game      string `json:"game,omitempty"`
+	Creator   string `json:"creator,omitempty"`
+	Teacher   string `json:"teacher,omitempty"`
 }

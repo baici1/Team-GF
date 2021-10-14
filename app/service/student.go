@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"team-gf/app/dao"
+	"team-gf/app/dao/mysql"
 	"team-gf/app/model"
 	"team-gf/library/jwt"
 
@@ -74,7 +75,8 @@ func (u *userService) GetUserData(id int64) (data *model.StuApiGetDetailRes, err
 		if err == sql.ErrNoRows {
 			err = model.ErrorQueryFailedUser
 		}
-		return data, err
+		return nil, err
 	}
+	data.Gender = mysql.MysqlUtils.GetGender(data.Gender)
 	return
 }

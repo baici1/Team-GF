@@ -59,9 +59,9 @@ func (*commonApi) GetOwnTeams(r *ghttp.Request) {
 	)
 	//如果没有获取到gameId参数，则返回全部参加的队伍信息，如果有则返回参加的队伍信息
 	//参数为0则代表全部队伍信息，如果>0则返回相对应的比赛队伍信息
-	gameId := gconv.Int64(r.Get("game"))
+	//gameId := gconv.Int64(r.Get("game"))
 	stuId := r.GetParam(service.ContextUserIDKey)
-	ApiRes, err := service.TeamCommon.GetTeamsDetail(gameId, gconv.Int64(stuId))
+	ApiRes, err := service.TeamCommon.GetTeamsDetail(gconv.Int64(stuId))
 	if err != nil {
 		g.Log().Error(err.Error())
 		response.ResponseError(r, code.CodeServerBusy)

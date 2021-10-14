@@ -32,7 +32,7 @@ type StuApiSubmitDataReq struct {
 type StuApiGetDetailRes struct {
 	Stuid     string `json:"stuid,omitempty"`
 	Name      string `json:"name,omitempty"`
-	Gander    int    `json:"gander,omitempty"`
+	Gender    string `json:"gender,omitempty"`
 	Email     string `json:"email,omitempty"`
 	Introduce string `json:"introduce,omitempty"`
 }

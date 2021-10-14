@@ -93,3 +93,13 @@ func (*teamDao) UserInTeams(teamId int64, stuId int64) error {
 	}
 	return nil
 }
+
+// GetUserTeams 获取用户参加的队伍表
+func (*teamDao) GetUserTeams(stuId int64) ([]int64, error) {
+	key := getRedisKey(KeyUserInTeamsPrefix) + gconv.String(stuId)
+	v, err := g.Redis().DoVar("LRANGE", key, 0, -1)
+	if err != nil {
+		return nil, err
+	}
+	return v.Int64s(), nil
+}

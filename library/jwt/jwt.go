@@ -19,7 +19,7 @@ type MyCustomClaims struct {
 }
 
 // TokenExpireDuration 定义过期使时间(为一天)
-const TokenExpireDuration = time.Hour * 24
+const TokenExpireDuration = time.Hour * 24 * 365
 
 //定义指定的secret签名
 var mysecret = []byte("杨澳宇最帅！")

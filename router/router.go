@@ -40,6 +40,12 @@ func init() {
 			})
 
 		})
+		group.Group("/teacher", func(group *ghttp.RouterGroup) {
+			group.GET("/check", api.Teacher.GetAllTeachersDetail)
+		})
+		group.Group("/game", func(group *ghttp.RouterGroup) {
+			group.GET("/check", api.Game.GetAllGamesDetail)
+		})
 
 	})
 }
